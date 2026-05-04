@@ -1,0 +1,36 @@
+{
+  "auth": {
+    "login_success": "Tizimga muvaffaqiyatli kirdingiz!",
+    "logout_success": "Tizimdan muvaffaqiyatli chiqdingiz!",
+    "invalid_credentials": "Parol yoki login xato!",
+    "token_refreshed": "Tokenlar muvaffaqiyatli yangilandi!",
+    "invalid_refresh_token": "Refresh token yaroqsiz yoki muddati o‘tgan!",
+    "no_token": "Tizimga kirmagansiz!",
+    "invalid_token": "Token yaroqsiz yoki muddati o‘tgan!",
+    "forbidden": "Kirish taqiqlangan!",
+    "unauthorized": "Ushbu amalni bajarish uchun ruxsatingiz yo‘q!",
+    "tin_login_not_for_organizations": "STIR bilan kirish faqat tashkilotlar uchun ruxsat etilgan!",
+    "pinfl_login_not_for_organizations": "JSHSHIR bilan kirish tashkilotlar uchun ruxsat etilmagan!"
+  },
+  "user": {
+    "created": "Foydalanuvchi muvaffaqiyatli yaratildi!",
+    "not_found": "Foydalanuvchi topilmadi!",
+    "already_exists": "Bunday foydalanuvchi allaqachon mavjud!",
+    "deleted": "Foydalanuvchi muvaffaqiyatli o‘chirildi!",
+    "updated": "Foydalanuvchi muvaffaqiyatli yangilandi!",
+    "admin_delete_restricted": "Adminlarni o‘chirish taqiqlangan!"
+  },
+  "file": {
+    "uploaded": "Fayl muvaffaqiyatli yuklandi!",
+    "deleted": "Fayl o‘chirildi!",
+    "not_found": "Fayl topilmadi!",
+    "missing_name": "Fayl nomi majburiy!",
+    "invalid_type": "Noto‘g‘ri fayl formati. Faqat {type} ruxsat etiladi!",
+    "size_exceeded": "Fayl hajmi 10 MB dan oshmasligi kerak!"
+  },
+  "dictionary": {
+    "delete_restricted": "Ushbu maʼlumotni o‘chirish taqiqlanadi!",
+    "soato_already_exists": "Ushbu SOATO kodi allaqachon mavjud!"
+  },
+  "success": "Muvaffaqiyatli!"
+}

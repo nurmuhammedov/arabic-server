@@ -1,0 +1,33 @@
+{
+  "auth": {
+    "login_success": "Successfully logged in!",
+    "logout_success": "Successfully logged out!",
+    "invalid_credentials": "Invalid username or password!",
+    "token_refreshed": "Tokens refreshed successfully!",
+    "invalid_refresh_token": "Refresh token is invalid or expired!",
+    "no_token": "Unauthorized access!",
+    "invalid_token": "Token is invalid or expired!",
+    "forbidden": "Access denied!",
+    "unauthorized": "You are not authorized to perform this action!",
+    "tin_login_not_for_organizations": "TIN login is allowed only for organization roles!",
+    "pinfl_login_not_for_organizations": "PINFL login is not allowed for organization roles!"
+  },
+  "user": {
+    "created": "User successfully created!",
+    "not_found": "User not found!",
+    "already_exists": "User with such credentials already exists!",
+    "deleted": "User successfully deleted!",
+    "updated": "User successfully updated!",
+    "admin_delete_restricted": "Admins cannot be deleted!"
+  },
+  "file": {
+    "uploaded": "File uploaded successfully!",
+    "deleted": "File deleted!",
+    "not_found": "File not found!",
+    "missing_name": "File name is required!",
+    "invalid_type": "Invalid file format. Only {type} is allowed!",
+    "size_exceeded": "File size must not exceed 10 MB!"
+  },
+  "success": "Successfully!",
+  "delete_restricted": "Deletion of this information is prohibited!"
+}
