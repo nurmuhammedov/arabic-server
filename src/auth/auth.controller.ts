@@ -13,7 +13,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @ApiOperation({ summary: 'Tizimga kirish' })
+  @ApiOperation({ summary: 'Login' })
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const data = await this.authService.login(dto)
     this.setCookies(res, data.accessToken, data.refreshToken)
@@ -21,7 +21,7 @@ export class AuthController {
   }
 
   @Post('register')
-  @ApiOperation({ summary: 'Ro‘yxatdan o‘tish' })
+  @ApiOperation({ summary: 'Register' })
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     const data = await this.authService.register(dto)
     this.setCookies(res, data.accessToken, data.refreshToken)
@@ -29,7 +29,7 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @ApiOperation({ summary: 'Tokenni yangilash' })
+  @ApiOperation({ summary: 'Refresh tokens' })
   async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies['refresh_token']
     if (!refreshToken) throw new UnauthorizedException('Refresh token missing')
@@ -41,13 +41,13 @@ export class AuthController {
 
   @Get('profile')
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Profil ma’lumotlarini olish' })
+  @ApiOperation({ summary: 'Get current profile' })
   getProfile(@Req() req: any) {
     return this.authService.getProfile(req.user.id)
   }
 
   @Post('logout')
-  @ApiOperation({ summary: 'Tizimdan chiqish' })
+  @ApiOperation({ summary: 'Logout' })
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token')
     res.clearCookie('refresh_token')
@@ -59,13 +59,13 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 15 * 60 * 1000 // 15 min
+      maxAge: 15 * 60 * 1000
     })
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000
     })
   }
 }

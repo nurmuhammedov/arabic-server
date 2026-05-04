@@ -6,14 +6,8 @@ import helmet from 'helmet'
 import { I18nValidationPipe } from 'nestjs-i18n'
 import { I18nValidationExceptionFilter } from 'nestjs-i18n'
 import { join } from 'path'
-import { DataSource } from 'typeorm'
-import * as bcrypt from 'bcrypt'
 
 import { AppModule } from './app.module'
-import { RoleEnum } from './common/enums/role.enum'
-import { User } from './users/entities/user.entity'
-import { Region } from './regions/entities/region.entity'
-import { District } from './districts/entities/district.entity'
 
 async function bootstrap() {
   const PORT = process.env.PORT ?? 8080
@@ -50,8 +44,8 @@ async function bootstrap() {
   })
 
   const config = new DocumentBuilder()
-    .setTitle('Arabic Learning API Documentation')
-    .setDescription('Arabic Learning Platform API endpoints.')
+    .setTitle('Arabic Learning API')
+    .setDescription('API documentation for Arabic Learning Platform.')
     .setVersion('1.0.0')
     .addCookieAuth('access_token', {
       type: 'apiKey',
@@ -70,42 +64,5 @@ async function bootstrap() {
   await app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`)
   })
-
-  // Seed logic
-  const dataSource = app.get(DataSource)
-  const userRepository = dataSource.getRepository(User)
-  const regionRepository = dataSource.getRepository(Region)
-  const districtRepository = dataSource.getRepository(District)
-
-  const userCount = await userRepository.count()
-  if (userCount === 0) {
-    console.log('Seeding initial data...')
-    
-    let region = await regionRepository.findOne({ where: { soato: '17' } })
-    if (!region) {
-      region = regionRepository.create({ name: 'Toshkent', soato: '17' })
-      region = await regionRepository.save(region)
-    }
-
-    let district = await districtRepository.findOne({ where: { soato: '1726' } })
-    if (!district) {
-      district = districtRepository.create({ name: 'Yunusobod', soato: '1726', regionId: region.id })
-      district = await districtRepository.save(district)
-    }
-
-    const hashedPassword = await bcrypt.hash('admin123', 10)
-    const admin = userRepository.create({
-      username: 'admin',
-      password: hashedPassword,
-      email: 'admin@arabic.uz',
-      fullName: 'Administrator',
-      phoneNumber: '+998901234567',
-      role: RoleEnum.ADMIN,
-      regionId: region.id,
-      districtId: district.id
-    })
-    await userRepository.save(admin)
-    console.log('Initial Admin created: admin / admin123')
-  }
 }
 void bootstrap()

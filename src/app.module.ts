@@ -12,9 +12,9 @@ import { AuthModule } from './auth/auth.module'
 import { AuthGuard } from './common/guards/auth.guard'
 import { RolesGuard } from './common/guards/roles.guard'
 import { ResponseInterceptor } from './common/interceptors/response.interceptor'
-import { UsersModule } from './users/users.module'
-import { RegionsModule } from './regions/regions.module'
 import { DistrictsModule } from './districts/districts.module'
+import { RegionsModule } from './regions/regions.module'
+import { UsersModule } from './users/users.module'
 
 @Module({
   controllers: [AppController],

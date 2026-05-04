@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
+
 import { BaseEntity } from '../../common/entities/base.entity'
 import { RoleEnum } from '../../common/enums/role.enum'
 
