@@ -1,18 +1,22 @@
-import { Module } from '@nestjs/common'
+import { ClassSerializerInterceptor, Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
+import { APP_GUARD, APP_INTERCEPTOR, Reflector } from '@nestjs/core'
+import { ServeStaticModule } from '@nestjs/serve-static'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } from 'nestjs-i18n'
 import * as process from 'node:process'
 import * as path from 'path'
+import { join } from 'path'
 
 import { AuthModule } from './auth/auth.module'
 import { AuthGuard } from './common/guards/auth.guard'
 import { RolesGuard } from './common/guards/roles.guard'
 import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 import { DistrictsModule } from './districts/districts.module'
+import { FilesModule } from './files/files.module'
 import { RegionsModule } from './regions/regions.module'
 import { UsersModule } from './users/users.module'
+import { VocabularyModule } from './vocabulary/vocabulary.module'
 
 @Module({
   controllers: [],
@@ -28,6 +32,11 @@ import { UsersModule } from './users/users.module'
     {
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: (reflector: Reflector) => new ClassSerializerInterceptor(reflector),
+      inject: [Reflector]
     }
   ],
   imports: [
@@ -35,9 +44,15 @@ import { UsersModule } from './users/users.module'
     UsersModule,
     RegionsModule,
     DistrictsModule,
+    FilesModule,
+    VocabularyModule,
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
       isGlobal: true
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads'
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

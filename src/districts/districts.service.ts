@@ -12,7 +12,7 @@ export class DistrictsService {
   ) {}
 
   async findAll(params: { page?: number; limit?: number; search?: string; regionId?: string }) {
-    const { page = 1, limit = 10, search, regionId } = params
+    const { page = 1, limit = 20, search, regionId } = params
     const query = this.districtRepository
       .createQueryBuilder('district')
       .leftJoin('district.region', 'region')

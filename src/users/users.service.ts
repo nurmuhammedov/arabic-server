@@ -14,7 +14,7 @@ export class UsersService {
   ) {}
 
   async findAll(params: { page?: number; limit?: number; search?: string }) {
-    const { page = 1, limit = 10, search } = params
+    const { page = 1, limit = 20, search } = params
     const query = this.userRepository
       .createQueryBuilder('user')
       .leftJoin('user.region', 'region')

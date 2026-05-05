@@ -12,7 +12,7 @@ export class RegionsService {
   ) {}
 
   async findAll(params: { page?: number; limit?: number; search?: string }) {
-    const { page = 1, limit = 10, search } = params
+    const { page = 1, limit = 20, search } = params
     const query = this.regionRepository
       .createQueryBuilder('region')
       .select(['region.id', 'region.createdAt', 'region.updatedAt', 'region.name', 'region.soato'])
