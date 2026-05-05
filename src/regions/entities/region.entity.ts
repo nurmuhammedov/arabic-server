@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { Column, Entity, OneToMany } from 'typeorm'
 
 import { BaseEntity } from '../../common/entities/base.entity'
+import { District } from '../../districts/entities/district.entity'
 
 @Entity({ name: 'regions' })
 export class Region extends BaseEntity {
@@ -13,5 +14,5 @@ export class Region extends BaseEntity {
 
   @ApiProperty()
   @OneToMany('District', 'region')
-  districts!: any[]
+  districts!: District[]
 }

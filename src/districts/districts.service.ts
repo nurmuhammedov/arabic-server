@@ -11,13 +11,69 @@ export class DistrictsService {
     private readonly districtRepository: Repository<District>
   ) {}
 
-  async findAll(regionId?: string) {
+  async findAll(params: { page?: number; limit?: number; search?: string; regionId?: string }) {
+    const { page = 1, limit = 10, search, regionId } = params
+    const query = this.districtRepository
+      .createQueryBuilder('district')
+      .leftJoin('district.region', 'region')
+      .select([
+        'district.id',
+        'district.createdAt',
+        'district.updatedAt',
+        'district.name',
+        'district.soato',
+        'region.id',
+        'region.name'
+      ])
+
+    if (regionId) {
+      query.andWhere('district.regionId = :regionId', { regionId })
+    }
+
+    if (search) {
+      query.andWhere('district.name ILIKE :search', { search: `%${search}%` })
+    }
+
+    const [content, totalElements] = await query
+      .orderBy('district.name', 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount()
+
+    return {
+      content,
+      page: {
+        totalElements,
+        totalPages: Math.ceil(totalElements / limit)
+      }
+    }
+  }
+
+  async select(regionId?: string) {
     const where = regionId ? { regionId } : {}
-    return this.districtRepository.find({ where, order: { name: 'ASC' } })
+    return this.districtRepository.find({
+      where,
+      select: ['id', 'name', 'regionId'],
+      order: { name: 'ASC' }
+    })
   }
 
   async findOne(id: string) {
-    const district = await this.districtRepository.findOne({ where: { id }, relations: ['region'] })
+    const district = await this.districtRepository
+      .createQueryBuilder('district')
+      .leftJoin('district.region', 'region')
+      .select([
+        'district.id',
+        'district.createdAt',
+        'district.updatedAt',
+        'district.name',
+        'district.soato',
+        'region.id',
+        'region.name'
+      ])
+      .where('district.id = :id', { id })
+      .getOne()
+
     if (!district) throw new NotFoundException('District not found')
     return district
   }

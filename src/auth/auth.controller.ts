@@ -2,16 +2,18 @@ import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Request, Response } from 'express'
 
+import { Public } from '../common/decorators/public.decorator'
 import { AuthGuard } from '../common/guards/auth.guard'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
 
-@ApiTags('Auth')
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('login')
   @ApiOperation({ summary: 'Login' })
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
@@ -20,6 +22,7 @@ export class AuthController {
     return data
   }
 
+  @Public()
   @Post('register')
   @ApiOperation({ summary: 'Register' })
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
@@ -28,12 +31,12 @@ export class AuthController {
     return data
   }
 
+  @Public()
   @Post('refresh')
   @ApiOperation({ summary: 'Refresh tokens' })
   async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const refreshToken = req.cookies['refresh_token']
+    const refreshToken = (req.cookies as Record<string, string | undefined>)['refresh_token']
     if (!refreshToken) throw new UnauthorizedException('Refresh token missing')
-
     const data = await this.authService.verifyAndRefresh(refreshToken)
     this.setCookies(res, data.accessToken, data.refreshToken)
     return data
@@ -42,10 +45,11 @@ export class AuthController {
   @Get('profile')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get current profile' })
-  getProfile(@Req() req: any) {
+  getProfile(@Req() req: Request & { user: { id: string } }) {
     return this.authService.getProfile(req.user.id)
   }
 
+  @Public()
   @Post('logout')
   @ApiOperation({ summary: 'Logout' })
   logout(@Res({ passthrough: true }) res: Response) {

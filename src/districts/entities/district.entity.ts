@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 
 import { BaseEntity } from '../../common/entities/base.entity'
+import { Region } from '../../regions/entities/region.entity'
 
 @Entity({ name: 'districts' })
 export class District extends BaseEntity {
@@ -17,5 +18,5 @@ export class District extends BaseEntity {
   @ApiProperty()
   @ManyToOne('Region', 'districts', { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'region_id' })
-  region!: any
+  region!: Region
 }

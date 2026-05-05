@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { Roles } from '../common/decorators/roles.decorator'
@@ -13,9 +13,19 @@ export class RegionsController {
   constructor(private readonly regionsService: RegionsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all regions' })
-  findAll() {
-    return this.regionsService.findAll()
+  @ApiOperation({ summary: 'Get all regions (with pagination and search)' })
+  findAll(@Query('page') page?: string, @Query('limit') limit?: string, @Query('search') search?: string) {
+    return this.regionsService.findAll({
+      page: page ? +page : undefined,
+      limit: limit ? +limit : undefined,
+      search
+    })
+  }
+
+  @Get('select')
+  @ApiOperation({ summary: 'Get regions for select dropdown' })
+  select() {
+    return this.regionsService.select()
   }
 
   @Get(':id')

@@ -11,12 +11,54 @@ export class RegionsService {
     private readonly regionRepository: Repository<Region>
   ) {}
 
-  async findAll() {
-    return this.regionRepository.find({ order: { name: 'ASC' } })
+  async findAll(params: { page?: number; limit?: number; search?: string }) {
+    const { page = 1, limit = 10, search } = params
+    const query = this.regionRepository
+      .createQueryBuilder('region')
+      .select(['region.id', 'region.createdAt', 'region.updatedAt', 'region.name', 'region.soato'])
+
+    if (search) {
+      query.andWhere('region.name ILIKE :search', { search: `%${search}%` })
+    }
+
+    const [content, totalElements] = await query
+      .orderBy('region.name', 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount()
+
+    return {
+      content,
+      page: {
+        totalElements,
+        totalPages: Math.ceil(totalElements / limit)
+      }
+    }
+  }
+
+  async select() {
+    return this.regionRepository.find({
+      select: ['id', 'name'],
+      order: { name: 'ASC' }
+    })
   }
 
   async findOne(id: string) {
-    const region = await this.regionRepository.findOne({ where: { id }, relations: ['districts'] })
+    const region = await this.regionRepository
+      .createQueryBuilder('region')
+      .leftJoin('region.districts', 'districts')
+      .select([
+        'region.id',
+        'region.createdAt',
+        'region.updatedAt',
+        'region.name',
+        'region.soato',
+        'districts.id',
+        'districts.name'
+      ])
+      .where('region.id = :id', { id })
+      .getOne()
+
     if (!region) throw new NotFoundException('Region not found')
     return region
   }

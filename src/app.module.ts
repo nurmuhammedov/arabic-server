@@ -6,8 +6,6 @@ import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } fro
 import * as process from 'node:process'
 import * as path from 'path'
 
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { AuthGuard } from './common/guards/auth.guard'
 import { RolesGuard } from './common/guards/roles.guard'
@@ -17,9 +15,8 @@ import { RegionsModule } from './regions/regions.module'
 import { UsersModule } from './users/users.module'
 
 @Module({
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard

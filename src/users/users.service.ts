@@ -13,18 +13,70 @@ export class UsersService {
     private readonly userRepository: Repository<User>
   ) {}
 
-  async findAll() {
-    return this.userRepository.find({
-      relations: ['region', 'district'],
-      order: { createdAt: 'DESC' }
-    })
+  async findAll(params: { page?: number; limit?: number; search?: string }) {
+    const { page = 1, limit = 10, search } = params
+    const query = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.region', 'region')
+      .leftJoin('user.district', 'district')
+      .select([
+        'user.id',
+        'user.createdAt',
+        'user.updatedAt',
+        'user.username',
+        'user.email',
+        'user.fullName',
+        'user.phoneNumber',
+        'user.role',
+        'region.id',
+        'region.name',
+        'district.id',
+        'district.name'
+      ])
+
+    if (search) {
+      query.andWhere('(user.fullName ILIKE :search OR user.username ILIKE :search OR user.email ILIKE :search)', {
+        search: `%${search}%`
+      })
+    }
+
+    const [content, totalElements] = await query
+      .orderBy('user.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount()
+
+    return {
+      content,
+      page: {
+        totalElements,
+        totalPages: Math.ceil(totalElements / limit)
+      }
+    }
   }
 
   async findOne(id: string) {
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: ['region', 'district']
-    })
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.region', 'region')
+      .leftJoin('user.district', 'district')
+      .select([
+        'user.id',
+        'user.createdAt',
+        'user.updatedAt',
+        'user.username',
+        'user.email',
+        'user.fullName',
+        'user.phoneNumber',
+        'user.role',
+        'region.id',
+        'region.name',
+        'district.id',
+        'district.name'
+      ])
+      .where('user.id = :id', { id })
+      .getOne()
+
     if (!user) throw new NotFoundException('User not found')
     return user
   }

@@ -13,9 +13,25 @@ export class DistrictsController {
   constructor(private readonly districtsService: DistrictsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all districts (with regionId filter)' })
-  findAll(@Query('regionId') regionId?: string) {
-    return this.districtsService.findAll(regionId)
+  @ApiOperation({ summary: 'Get all districts (with pagination and filters)' })
+  findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('regionId') regionId?: string
+  ) {
+    return this.districtsService.findAll({
+      page: page ? +page : undefined,
+      limit: limit ? +limit : undefined,
+      search,
+      regionId
+    })
+  }
+
+  @Get('select')
+  @ApiOperation({ summary: 'Get districts for select dropdown (with optional regionId filter)' })
+  select(@Query('regionId') regionId?: string) {
+    return this.districtsService.select(regionId)
   }
 
   @Get(':id')

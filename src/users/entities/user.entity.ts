@@ -3,6 +3,8 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 
 import { BaseEntity } from '../../common/entities/base.entity'
 import { RoleEnum } from '../../common/enums/role.enum'
+import { District } from '../../districts/entities/district.entity'
+import { Region } from '../../regions/entities/region.entity'
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -30,7 +32,7 @@ export class User extends BaseEntity {
   @ApiProperty()
   @ManyToOne('Region', { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'region_id' })
-  region!: any
+  region!: Region
 
   @Column({ name: 'district_id', type: 'uuid', nullable: false })
   districtId!: string
@@ -38,5 +40,5 @@ export class User extends BaseEntity {
   @ApiProperty()
   @ManyToOne('District', { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'district_id' })
-  district!: any
+  district!: District
 }
