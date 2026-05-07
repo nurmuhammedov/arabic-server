@@ -64,7 +64,8 @@ import { VocabularyModule } from './vocabulary/vocabulary.module'
         password: configService.get<string>('DB_PASSWORD')?.trim(),
         database: configService.get<string>('DB_NAME')?.trim(),
         autoLoadEntities: true,
-        synchronize: true
+        synchronize: true,
+        ssl: configService.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: false } : false
       }),
       inject: [ConfigService]
     }),
