@@ -59,15 +59,15 @@ export class AuthGuard implements CanActivate {
 
           response.cookie('access_token', newAccess, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            secure: true,
+            sameSite: 'none',
             maxAge: maxAgeAccess
           })
 
           response.cookie('refresh_token', newRefresh, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            secure: true,
+            sameSite: 'none',
             maxAge: maxAgeRefresh
           })
 
