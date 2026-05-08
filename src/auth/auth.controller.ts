@@ -59,16 +59,17 @@ export class AuthController {
   }
 
   private setCookies(res: Response, accessToken: string, refreshToken: string) {
+    const isProduction = process.env.NODE_ENV === 'production'
     res.cookie('access_token', accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: Number(process.env.JWT_ACCESS_COOKIE_MAX_AGE) || 15 * 60 * 1000
     })
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: Number(process.env.JWT_REFRESH_COOKIE_MAX_AGE) || 7 * 24 * 60 * 60 * 1000
     })
   }

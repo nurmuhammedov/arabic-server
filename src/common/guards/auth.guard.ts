@@ -57,17 +57,18 @@ export class AuthGuard implements CanActivate {
           const maxAgeAccess = Number(process.env.JWT_ACCESS_COOKIE_MAX_AGE) || 15 * 60 * 1000
           const maxAgeRefresh = Number(process.env.JWT_REFRESH_COOKIE_MAX_AGE) || 7 * 24 * 60 * 60 * 1000
 
+          const isProduction = process.env.NODE_ENV === 'production'
           response.cookie('access_token', newAccess, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: maxAgeAccess
           })
 
           response.cookie('refresh_token', newRefresh, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: maxAgeRefresh
           })
 
