@@ -13,9 +13,9 @@ the config in this repo is already prepared for them.
 
 ## 1. Database — Neon
 
-1. Create a project and copy its connection string. It looks like
-   `postgresql://USER:PASSWORD@ep-xxx.eu-central-1.aws.neon.tech/DBNAME`.
-2. Note the pieces: host, database name, user, password.
+Already set up and loaded: project `arabic`, database `neondb`, region
+Frankfurt. Take the connection string from the console's Connect panel, and use
+the direct endpoint rather than the `-pooler` one for DDL and seeding.
 
 The database is about 32 MB, so it sits well inside the free storage limit.
 
@@ -64,7 +64,7 @@ fly secrets set \
   DB_NAME=<neon database> \
   JWT_ACCESS_SECRET=<random> \
   JWT_REFRESH_SECRET=<random> \
-  CORS_ORIGINS=https://<your-app>.vercel.app \
+  CORS_ORIGINS=https://arabiy.vercel.app \
   BASE_URL=https://arabic-server.fly.dev
 
 fly deploy --remote-only
@@ -78,8 +78,9 @@ pause takes a second or two.
 
 ## 4. Frontend — Vercel
 
-Import the `arabic` repository in the Vercel dashboard. It is a Vite project,
-so the defaults are right: build `pnpm build`, output `dist`.
+Already set up: the `arabic` project tracks `nurmuhammedov/arabic` on `main`
+and serves `arabiy.vercel.app`, with the generated `arabic-silk.vercel.app`
+kept as a redirect.
 
 `vercel.json` already forwards `/api/*` to `https://arabic-server.fly.dev`.
 Change that host if the Fly app is named differently. The rewrite has to stay
@@ -91,7 +92,7 @@ one origin.
 
 ## After the first deploy
 
-- Check `https://<your-app>.vercel.app/api/v1/words` returns 401 rather than
+- Check `https://arabiy.vercel.app/api/v1/words` returns 401 rather than
   404. A 404 means the rewrite is not matching.
 - Sign in with the admin account created in step 2.
 - Reinstall the PWA: the service worker caches aggressively, so an old build
