@@ -1,23 +1,26 @@
-app = "arabic-server"
-primary_region = "fra"
+# fly.toml app configuration file generated for arabic-server on 2026-08-31T21:21:12+05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'arabic-server'
+primary_region = 'fra'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
 [env]
-  NODE_ENV = "production"
-  PORT = "8080"
-  DB_SSL = "true"
+  DB_SSL = 'true'
+  NODE_ENV = 'production'
+  PORT = '8080'
 
 [http_service]
   internal_port = 8080
   force_https = true
-  # The machine sleeps when idle and wakes on the next request in a second or
-  # two, which is what keeps this inside the free allowance.
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
 [[vm]]
-  size = "shared-cpu-1x"
-  memory = "512mb"
+  size = 'shared-cpu-1x'
+  memory = '512mb'
