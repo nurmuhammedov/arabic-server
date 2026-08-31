@@ -1,44 +1,41 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
+import { Column, Entity, Index } from 'typeorm'
 
 import { BaseEntity } from '../../common/entities/base.entity'
 import { RoleEnum } from '../../common/enums/role.enum'
-import { District } from '../../districts/entities/district.entity'
-import { Region } from '../../regions/entities/region.entity'
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
-  @Column({ type: 'varchar', nullable: false, unique: true })
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 30 })
   username!: string
 
-  @Column({ type: 'varchar', nullable: false, select: false })
+  @Column({ type: 'varchar', select: false })
   password!: string
 
-  @Column({ type: 'varchar', nullable: false, unique: true })
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 254 })
   email!: string
 
-  @Column({ name: 'full_name', type: 'varchar', nullable: false })
+  @Column({ name: 'full_name', type: 'varchar', length: 150 })
   fullName!: string
 
-  @Column({ name: 'phone_number', type: 'varchar', nullable: false })
-  phoneNumber!: string
+  @Column({ name: 'phone_number', type: 'varchar', length: 20, nullable: true })
+  phoneNumber?: string
 
+  @Index()
   @Column({ type: 'enum', enum: RoleEnum, default: RoleEnum.STUDENT })
   role!: RoleEnum
 
-  @Column({ name: 'region_id', type: 'uuid', nullable: false })
-  regionId!: string
+  @Column({ name: 'daily_new_limit', type: 'smallint', default: 10 })
+  dailyNewLimit!: number
 
-  @ApiProperty()
-  @ManyToOne('Region', { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'region_id' })
-  region!: Region
+  @Column({ name: 'daily_review_limit', type: 'smallint', default: 120 })
+  dailyReviewLimit!: number
 
-  @Column({ name: 'district_id', type: 'uuid', nullable: false })
-  districtId!: string
+  /** Which glosses to reveal on the answer side, e.g. ['uz', 'ru', 'en']. */
+  @Column({ name: 'answer_languages', type: 'varchar', array: true, default: () => `'{uz,ru,en}'` })
+  answerLanguages!: string[]
 
-  @ApiProperty()
-  @ManyToOne('District', { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'district_id' })
-  district!: District
+  @Column({ type: 'varchar', length: 64, default: 'Asia/Tashkent' })
+  timezone!: string
 }

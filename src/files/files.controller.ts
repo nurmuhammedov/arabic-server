@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { Request } from 'express'
+import type { Request } from 'express'
 import * as fs from 'fs'
 import { diskStorage } from 'multer'
 import { extname, join } from 'path'

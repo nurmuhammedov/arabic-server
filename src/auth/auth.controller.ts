@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { Request, Response } from 'express'
+import { Throttle } from '@nestjs/throttler'
+import type { Request, Response } from 'express'
 
 import { Public } from '../common/decorators/public.decorator'
 import { AuthGuard } from '../common/guards/auth.guard'
@@ -14,6 +15,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('login')
   @ApiOperation({ summary: 'Login' })
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
@@ -23,6 +25,7 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 3, ttl: 60_000 } })
   @Post('register')
   @ApiOperation({ summary: 'Register' })
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {

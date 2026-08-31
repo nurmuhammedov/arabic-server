@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
+import { JwtService, JwtSignOptions } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
-import { SignOptions } from 'jsonwebtoken'
 
 import { RoleEnum } from '../common/enums/role.enum'
 import { t } from '../common/helpers/i18n.helper'
@@ -111,9 +110,7 @@ export class AuthService {
       username: user.username,
       role: user.role,
       email: user.email,
-      phoneNumber: user.phoneNumber,
-      region: user.region,
-      district: user.district
+      phoneNumber: user.phoneNumber
     }
   }
 
@@ -121,11 +118,11 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.JWT_ACCESS_SECRET,
-        expiresIn: (process.env.JWT_ACCESS_EXPIRATION || '15m') as SignOptions['expiresIn']
+        expiresIn: (process.env.JWT_ACCESS_EXPIRATION || '15m') as JwtSignOptions['expiresIn']
       }),
       this.jwtService.signAsync(payload, {
         secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: (process.env.JWT_REFRESH_EXPIRATION || '7d') as SignOptions['expiresIn']
+        expiresIn: (process.env.JWT_REFRESH_EXPIRATION || '7d') as JwtSignOptions['expiresIn']
       })
     ])
 

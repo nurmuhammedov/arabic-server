@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException, forwardRef } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { JwtService, TokenExpiredError } from '@nestjs/jwt'
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
 
 import { AuthService } from '../../auth/auth.service'
 import { JwtPayload } from '../../types/jwt-payload.type'
