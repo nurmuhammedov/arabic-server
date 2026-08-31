@@ -68,7 +68,7 @@ fly secrets set \
   JWT_REFRESH_EXPIRATION=365d \
   JWT_ACCESS_COOKIE_MAX_AGE=2592000000 \
   JWT_REFRESH_COOKIE_MAX_AGE=31536000000 \
-  CORS_ORIGINS=https://arabiy.vercel.app \
+  CORS_ORIGINS=https://arab-tilim.vercel.app \
   BASE_URL=https://arabic-server.fly.dev
 
 fly deploy --remote-only
@@ -88,7 +88,7 @@ revokes one before it expires.
 ## 4. Frontend — Vercel
 
 Already set up: the `arabic` project tracks `nurmuhammedov/arabic` on `main`
-and serves `arabiy.vercel.app`, with the generated `arabic-silk.vercel.app`
+and serves `arab-tilim.vercel.app`, with the generated `arabic-silk.vercel.app`
 kept as a redirect.
 
 `vercel.json` already forwards `/api/*` to `https://arabic-server.fly.dev`.
@@ -101,7 +101,7 @@ one origin.
 
 ## After the first deploy
 
-- Check `https://arabiy.vercel.app/api/v1/words` returns 401 rather than
+- Check `https://arab-tilim.vercel.app/api/v1/words` returns 401 rather than
   404. A 404 means the rewrite is not matching.
 - Sign in with the admin account created in step 2.
 - Reinstall the PWA: the service worker caches aggressively, so an old build
