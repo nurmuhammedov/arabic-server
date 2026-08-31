@@ -1,0 +1,23 @@
+app = "arabic-server"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+  DB_SSL = "true"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # The machine sleeps when idle and wakes on the next request in a second or
+  # two, which is what keeps this inside the free allowance.
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
