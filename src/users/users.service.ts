@@ -3,8 +3,20 @@ import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { Repository } from 'typeorm'
 
+import { t } from '../common/helpers/i18n.helper'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User } from './entities/user.entity'
+
+const PUBLIC_FIELDS = [
+  'user.id',
+  'user.createdAt',
+  'user.updatedAt',
+  'user.username',
+  'user.email',
+  'user.fullName',
+  'user.phoneNumber',
+  'user.role'
+] as const
 
 @Injectable()
 export class UsersService {
@@ -15,24 +27,7 @@ export class UsersService {
 
   async findAll(params: { page?: number; limit?: number; search?: string }) {
     const { page = 1, limit = 20, search } = params
-    const query = this.userRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.region', 'region')
-      .leftJoin('user.district', 'district')
-      .select([
-        'user.id',
-        'user.createdAt',
-        'user.updatedAt',
-        'user.username',
-        'user.email',
-        'user.fullName',
-        'user.phoneNumber',
-        'user.role',
-        'region.id',
-        'region.name',
-        'district.id',
-        'district.name'
-      ])
+    const query = this.userRepository.createQueryBuilder('user').select([...PUBLIC_FIELDS])
 
     if (search) {
       query.andWhere('(user.fullName ILIKE :search OR user.username ILIKE :search OR user.email ILIKE :search)', {
@@ -48,40 +43,22 @@ export class UsersService {
 
     return {
       content,
-      page: {
-        totalElements,
-        totalPages: Math.ceil(totalElements / limit)
-      }
+      page: { totalElements, totalPages: Math.ceil(totalElements / limit) }
     }
   }
 
   async findOne(id: string) {
     const user = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoin('user.region', 'region')
-      .leftJoin('user.district', 'district')
-      .select([
-        'user.id',
-        'user.createdAt',
-        'user.updatedAt',
-        'user.username',
-        'user.email',
-        'user.fullName',
-        'user.phoneNumber',
-        'user.role',
-        'region.id',
-        'region.name',
-        'district.id',
-        'district.name'
-      ])
+      .select([...PUBLIC_FIELDS])
       .where('user.id = :id', { id })
       .getOne()
 
-    if (!user) throw new NotFoundException('User not found')
+    if (!user) throw new NotFoundException(t('common.user.not_found', 'User not found'))
     return user
   }
 
-  async findByUsername(username: string) {
+  findByUsername(username: string) {
     return this.userRepository.findOne({
       where: { username },
       select: ['id', 'username', 'password', 'role', 'fullName', 'email']
@@ -90,33 +67,38 @@ export class UsersService {
 
   async create(dto: CreateUserDto) {
     const existing = await this.userRepository.findOne({
-      where: [{ username: dto.username }, { email: dto.email }]
+      where: [{ username: dto.username }, { email: dto.email }],
+      select: ['id']
     })
+
     if (existing) {
-      throw new ConflictException('Username or email already exists')
+      throw new ConflictException(t('common.user.already_exists', 'Username or email already exists'))
     }
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10)
     const user = this.userRepository.create({
       ...dto,
-      password: hashedPassword
+      password: await bcrypt.hash(dto.password, 10)
     })
 
-    return this.userRepository.save(user)
+    const saved = await this.userRepository.save(user)
+    return this.findOne(saved.id)
   }
 
   async update(id: string, dto: Partial<CreateUserDto>) {
-    const user = await this.findOne(id)
+    await this.findOne(id)
+
+    const patch: Partial<User> = { ...dto }
     if (dto.password) {
-      dto.password = await bcrypt.hash(dto.password, 10)
+      patch.password = await bcrypt.hash(dto.password, 10)
     }
-    Object.assign(user, dto)
-    return this.userRepository.save(user)
+
+    await this.userRepository.update(id, patch)
+    return this.findOne(id)
   }
 
   async remove(id: string) {
     const user = await this.findOne(id)
-    await this.userRepository.remove(user)
+    await this.userRepository.delete(user.id)
     return { success: true }
   }
 }

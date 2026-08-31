@@ -1,6 +1,5 @@
 import { Global, Module } from '@nestjs/common'
-import { JwtModule } from '@nestjs/jwt'
-import { SignOptions } from 'jsonwebtoken'
+import { JwtModule, JwtSignOptions } from '@nestjs/jwt'
 
 import { AuthGuard } from '../common/guards/auth.guard'
 import { UsersModule } from '../users/users.module'
@@ -14,8 +13,8 @@ import { AuthService } from './auth.service'
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'SECRET',
-      signOptions: { expiresIn: (process.env.JWT_EXPIRES_IN || '36000s') as SignOptions['expiresIn'] }
+      secret: process.env.JWT_ACCESS_SECRET,
+      signOptions: { expiresIn: (process.env.JWT_ACCESS_EXPIRATION || '15m') as JwtSignOptions['expiresIn'] }
     })
   ],
   exports: [AuthService, AuthGuard, JwtModule]

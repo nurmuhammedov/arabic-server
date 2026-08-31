@@ -74,11 +74,12 @@ export class FilesService {
       throw new NotFoundException(t('common.file.not_found', 'File not found!'))
     }
 
-    const domain = process.env.DOMAIN || 'http://localhost:8080'
+    const domain = (process.env.BASE_URL || 'http://localhost:8080').replace(/\/$/, '')
+    const normalizedPath = file.path.replace(/\\/g, '/').replace(/^\//, '')
     return {
       id: file.id,
       name: file.name,
-      path: `${domain}/${file.path.replace(/\\/g, '/')}`,
+      path: `${domain}/${normalizedPath}`,
       size: Number(file.size)
     }
   }
