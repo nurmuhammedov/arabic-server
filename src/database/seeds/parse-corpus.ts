@@ -199,7 +199,10 @@ export const parseCorpus = (filePath = join(__dirname, 'data', 'quran-morphology
   // sura:ayah -> wordIndex -> concatenated segments, so verse text stays aligned with positions.
   const verses = new Map<string, Map<number, string>>()
 
-  for (const line of raw.split('\n')) {
+  // Splitting on the newline alone leaves a carriage return on the last field
+  // of every line when the file is checked out with CRLF, which silently
+  // corrupts every lemma and tag read from it.
+  for (const line of raw.split(/\r?\n/)) {
     if (!line.trim()) continue
 
     const segment = parseLine(line)

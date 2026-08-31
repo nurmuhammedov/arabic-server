@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+# The corpus is parsed field by field and its last column ends the line, so a
+# CRLF checkout appends a carriage return to every lemma and tag. Git must
+# leave these files exactly as they are.
+src/database/seeds/data/*.txt -text
+src/database/seeds/data/*.tsv -text
