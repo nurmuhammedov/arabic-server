@@ -64,6 +64,10 @@ fly secrets set \
   DB_NAME=<neon database> \
   JWT_ACCESS_SECRET=<random> \
   JWT_REFRESH_SECRET=<random> \
+  JWT_ACCESS_EXPIRATION=30d \
+  JWT_REFRESH_EXPIRATION=365d \
+  JWT_ACCESS_COOKIE_MAX_AGE=2592000000 \
+  JWT_REFRESH_COOKIE_MAX_AGE=31536000000 \
   CORS_ORIGINS=https://arabiy.vercel.app \
   BASE_URL=https://arabic-server.fly.dev
 
@@ -75,6 +79,11 @@ fly deploy --remote-only
 `fly.toml` lets the machine stop when idle and start again on the next request,
 which is what keeps this inside the free allowance. The first request after a
 pause takes a second or two.
+
+The sessions are deliberately long — a month for the access token, a year for
+the refresh — so the installed app does not ask for a password every week.
+The cost is that a stolen token stays usable for that long, since nothing
+revokes one before it expires.
 
 ## 4. Frontend — Vercel
 
