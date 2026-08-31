@@ -5,6 +5,10 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
+# The prepare script installs git hooks, which have no meaning in an image and
+# fail outright once dev dependencies are skipped.
+ENV HUSKY=0
+
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
@@ -17,6 +21,8 @@ RUN pnpm run build
 
 FROM node:22-alpine AS deps
 WORKDIR /app
+
+ENV HUSKY=0
 
 RUN corepack enable
 

@@ -23,7 +23,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky",
+    "prepare": "husky || exit 0",
     "seed": "cross-env NODE_ENV=development ts-node src/database/seeds/run-seed.ts",
     "make-admin": "cross-env NODE_ENV=development ts-node src/database/seeds/make-admin.ts",
     "create-admin": "cross-env NODE_ENV=development ts-node src/database/seeds/create-admin.ts",
